@@ -1,4 +1,4 @@
-import { Menu } from "lucide-react";
+import { Menu, Snowflake, WormIcon } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -19,14 +19,12 @@ export const Navbar = () => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" onClick={close} className="text-xl font-bold hover:opacity-80 transition-colors">
-          YourLogo
+          <WormIcon className="inline-block mr-2" />
+          COBRA
         </Link>
 
         {/* Desktop */}
         <nav className="hidden md:flex items-center space-x-4">
-          <Link to="/" className="text-sm font-medium hover:text-muted-foreground transition-colors">
-            {t("navbar.home")}
-          </Link>
           <Separator orientation="vertical" className="h-6" />
           <ThemeChanger />
           <LanguageChanger />
@@ -42,15 +40,10 @@ export const Navbar = () => {
               <SheetTitle />
               <div className="flex items-center justify-between">
                 <Link to="/" onClick={close} className="text-xl font-bold hover:opacity-80 transition-colors">
-                  YourLogo
+                  <WormIcon className="inline-block mr-2" />
+                  COBRA
                 </Link>
               </div>
-
-              <Separator />
-
-              <Link to="/" onClick={close} className="text-base font-medium hover:text-muted-foreground transition-colors">
-                {t("navbar.home")}
-              </Link>
 
               <Separator />
 
