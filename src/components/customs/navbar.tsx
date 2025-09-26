@@ -1,7 +1,6 @@
-import { Menu, Snowflake, WormIcon } from "lucide-react";
+import { Menu, WormIcon } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -10,7 +9,6 @@ import { LanguageChanger } from "./language-changer";
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const { t } = useTranslation();
 
   const close = () => setOpen(false);
 
