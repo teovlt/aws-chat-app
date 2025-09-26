@@ -20,7 +20,7 @@ export const Navbar = () => {
         {/* Logo */}
         <Link to="/" onClick={close} className="text-xl font-bold hover:opacity-80 transition-colors">
           <WormIcon className="inline-block mr-2" />
-          COBRA
+          Cobra chat
         </Link>
 
         {/* Desktop */}
@@ -41,7 +41,7 @@ export const Navbar = () => {
               <div className="flex items-center justify-between">
                 <Link to="/" onClick={close} className="text-xl font-bold hover:opacity-80 transition-colors">
                   <WormIcon className="inline-block mr-2" />
-                  COBRA
+                  Cobra chat
                 </Link>
               </div>
 
