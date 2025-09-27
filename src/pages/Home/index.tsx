@@ -61,7 +61,7 @@ export function Home() {
           isOwn: item.username?.S === username,
         }));
 
-        setMessages(parsedMessages);
+        setMessages(parsedMessages.reverse());
       } catch (err) {
         console.error("Erreur fetching messages:", err);
       }
