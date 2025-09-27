@@ -1,6 +1,5 @@
-import type React from "react";
-
 import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -13,36 +12,7 @@ interface Message {
   isOwn: boolean;
 }
 
-const SAMPLE_MESSAGES: Message[] = [
-  {
-    id: "1",
-    text: "Hey everyone! Welcome to our global chat! 👋",
-    username: "Alex",
-    timestamp: new Date(Date.now() - 300000),
-    isOwn: false,
-  },
-  {
-    id: "2",
-    text: "This is such a beautiful interface! Love the professional design",
-    username: "Sarah",
-    timestamp: new Date(Date.now() - 240000),
-    isOwn: false,
-  },
-  {
-    id: "3",
-    text: "Thanks! The blue theme is really clean and professional",
-    username: "Mike",
-    timestamp: new Date(Date.now() - 180000),
-    isOwn: false,
-  },
-  {
-    id: "4",
-    text: "Anyone working on interesting projects lately?",
-    username: "Emma",
-    timestamp: new Date(Date.now() - 120000),
-    isOwn: false,
-  },
-];
+const API_URL = "https://xvkzbvpitd.execute-api.eu-west-1.amazonaws.com/prod/api/messages";
 
 const generateRandomUsername = () => {
   const adjectives = ["Cool", "Smart", "Happy", "Bright", "Swift", "Kind", "Bold", "Calm", "Quick", "Wise"];
@@ -54,7 +24,7 @@ const generateRandomUsername = () => {
 };
 
 export function Home() {
-  const [messages, setMessages] = useState<Message[]>(SAMPLE_MESSAGES);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [username] = useState(generateRandomUsername());
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -70,6 +40,34 @@ export function Home() {
 
   useEffect(() => {
     inputRef.current?.focus();
+  }, []);
+
+  // Fetch messages from API
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(API_URL);
+
+        // Parse le body complet
+        const body = JSON.parse(res.data.body);
+        const items = body.messages || [];
+
+        // Transformer le format AWS DynamoDB en format Message
+        const parsedMessages: Message[] = items.map((item: any) => ({
+          id: item.messageId?.S || Math.random().toString(36).substring(2, 15),
+          text: item.content?.S || "",
+          username: String(item.username?.S || "Unknown"),
+          timestamp: new Date(item.timestamp_utc_iso8601?.S || Date.now()),
+          isOwn: item.username?.S === username,
+        }));
+
+        setMessages(parsedMessages);
+      } catch (err) {
+        console.error("Erreur fetching messages:", err);
+      }
+    };
+
+    fetchMessages();
   }, []);
 
   const handleSendMessage = () => {
@@ -95,33 +93,23 @@ export function Home() {
     }
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  const formatTime = (date: Date) => date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
   return (
     <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-      <div className="border-b bg-card/50 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-primary text-xl">👥</span>
-            <div>
-              <h2 className="text-lg font-semibold">Global Discussion</h2>
-              <p className="text-sm text-muted-foreground">
-                Welcome, {username}! Join the conversation with {messages.length} messages
-              </p>
-            </div>
+      {/* Header */}
+      <div className="border-b bg-card/50 p-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="text-primary text-xl">👥</span>
+          <div>
+            <h2 className="text-lg font-semibold">Global Discussion</h2>
+            <p className="text-sm text-muted-foreground">
+              Welcome, {username}! Join the conversation with {messages.length} messages
+            </p>
           </div>
-          <div className="text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              Live
-            </span>
-          </div>
+        </div>
+        <div className="text-sm text-muted-foreground flex items-center gap-1">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Live
         </div>
       </div>
 
@@ -134,13 +122,11 @@ export function Home() {
                 {message.username.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-
             <div className={`flex flex-col gap-1 max-w-xs sm:max-w-md ${message.isOwn ? "items-end" : "items-start"}`}>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 {!message.isOwn && <span className="font-medium">{message.username}</span>}
                 <span>{formatTime(message.timestamp)}</span>
               </div>
-
               <div
                 className={`px-4 py-2 rounded-2xl ${
                   message.isOwn ? "bg-primary text-primary-foreground rounded-br-md" : "bg-card text-card-foreground rounded-bl-md border"
@@ -155,23 +141,19 @@ export function Home() {
       </div>
 
       {/* Input */}
-      <div className="border-t bg-card/50 p-4">
-        <div className="flex gap-3 items-end">
-          <div className="flex-1">
-            <Input
-              ref={inputRef}
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="bg-background border-border resize-none min-h-[44px] rounded-2xl"
-              maxLength={500}
-            />
-          </div>
-          <Button onClick={handleSendMessage} disabled={!newMessage.trim()} size="icon" className="w-11 h-11 rounded-full flex-shrink-0">
-            <span className="text-sm">➤</span>
-          </Button>
-        </div>
+      <div className="border-t bg-card/50 p-4 flex gap-3 items-end">
+        <Input
+          ref={inputRef}
+          placeholder="Type your message..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="flex-1 bg-background border-border resize-none min-h-[44px] rounded-2xl"
+          maxLength={500}
+        />
+        <Button onClick={handleSendMessage} disabled={!newMessage.trim()} size="icon" className="w-11 h-11 rounded-full flex-shrink-0">
+          <span className="text-sm">➤</span>
+        </Button>
       </div>
     </div>
   );
