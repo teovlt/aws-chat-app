@@ -68,20 +68,32 @@ export function Home() {
     fetchMessages();
   }, []);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
-    const message: Message = {
-      id: Date.now().toString(),
-      text: newMessage.trim(),
-      username,
-      timestamp: new Date(),
-      isOwn: true,
-    };
+    try {
+      const body = { username, content: newMessage.trim() };
+      await axios.post(API_URL, body, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-    setMessages((prev) => [...prev, message]);
-    setNewMessage("");
-    inputRef.current?.focus();
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: Date.now().toString(),
+          text: newMessage.trim(),
+          username,
+          timestamp: new Date(),
+          isOwn: true,
+        },
+      ]);
+
+      setNewMessage("");
+      inputRef.current?.focus();
+      scrollToBottom();
+    } catch (err) {
+      console.error("Erreur sending message:", err);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
