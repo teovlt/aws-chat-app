@@ -48,14 +48,12 @@ export function Home() {
       try {
         const res = await axios.get(API_URL);
 
-        // Parse le body complet
-        const body = JSON.parse(res.data.body);
-        const items = body.messages || [];
+        const items = res.data.messages || [];
 
         // Transformer le format AWS DynamoDB en format Message
         const parsedMessages: Message[] = items.map((item: any) => ({
-          id: item.messageId?.S || Math.random().toString(36).substring(2, 15),
-          text: item.content?.S || "",
+          id: item.messageId?.S,
+          text: item.content?.S,
           username: String(item.username?.S || "Unknown"),
           timestamp: new Date(item.timestamp_utc_iso8601?.S || Date.now()),
           isOwn: item.username?.S === username,
