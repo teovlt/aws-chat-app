@@ -14,6 +14,7 @@ export const Navbar = () => {
   const close = () => setOpen(false);
 
   const signOutRedirect = () => {
+    localStorage.removeItem("oidc.user:https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_eGUA8bz6s:5c3m5pbhagf094ms0jnrvkbpa");
     const clientId = "5c3m5pbhagf094ms0jnrvkbpa";
     const logoutUri = "https://s3-cobra-web.s3.eu-west-1.amazonaws.com/index.html";
     const cognitoDomain = "https://eu-west-1egua8bz6s.auth.eu-west-1.amazoncognito.com";
