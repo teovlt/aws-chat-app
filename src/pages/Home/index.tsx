@@ -48,18 +48,18 @@ export function Home() {
       try {
         const res = await axios.get(API_URL);
 
-        const items = res.data.messages || [];
+        const items = res.data.items || [];
 
         // Transformer le format AWS DynamoDB en format Message
         const parsedMessages: Message[] = items.map((item: any) => ({
-          id: item.messageId?.S,
-          text: item.content?.S,
-          username: String(item.username?.S || "Unknown"),
-          timestamp: new Date(item.timestamp_utc_iso8601?.S || Date.now()),
-          isOwn: item.username?.S === username,
+          id: item.messageId,
+          text: item.content,
+          username: String(item.username || "Unknown"),
+          timestamp: new Date(item.timestamp_utc_iso8601 || Date.now()),
+          isOwn: item.username === username,
         }));
 
-        setMessages(parsedMessages.reverse());
+        setMessages(parsedMessages);
       } catch (err) {
         console.error("Erreur fetching messages:", err);
       }
