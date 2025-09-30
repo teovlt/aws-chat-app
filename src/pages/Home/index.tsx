@@ -108,7 +108,7 @@ export function Home() {
   const formatTime = (date: Date) => date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
   return (
-    <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 flex flex-col">
       {/* Header */}
       <div className="border-b bg-card/50 p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
