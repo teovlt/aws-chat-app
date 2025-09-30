@@ -19,11 +19,30 @@ export const App = () => {
   }, [auth.isAuthenticated, navigate]);
 
   if (auth.isLoading) {
-    return <div>Loading...</div>;
+    setTimeout(() => {}, 1000);
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl p-8 shadow-lg ring-1 ring-gray-200 text-center max-w-sm">
+          <div className="animate-spin mx-auto h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full"></div>
+          <h2 className="mt-4 text-2xl font-bold text-gray-900">Loading...</h2>
+          <p className="mt-2 text-gray-600">Please wait while we prepare Cobra Chat for you. Get ready to join the global conversation!</p>
+        </div>
+      </div>
+    );
   }
 
   if (auth.error) {
-    return <div>Encountering error... {auth.error.message}</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl p-8 shadow-lg ring-1 ring-gray-200 text-center max-w-sm">
+          <h2 className="text-2xl font-bold text-red-600">Oops! Something went wrong</h2>
+          <p className="mt-2 text-gray-600">{auth.error.message}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white w-full">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (auth.isAuthenticated) {
