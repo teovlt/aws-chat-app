@@ -123,7 +123,6 @@ export function Home() {
         <div className="text-sm text-muted-foreground flex items-center gap-1">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Live
         </div>
-        <button onClick={() => auth.signoutRedirect()}>Sign out</button>
       </div>
 
       {/* Messages */}

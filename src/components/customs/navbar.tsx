@@ -1,4 +1,4 @@
-import { Menu, WormIcon } from "lucide-react";
+import { Menu, WormIcon, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -6,11 +6,19 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeChanger } from "./theme-changer";
 import { LanguageChanger } from "./language-changer";
+import { Button } from "@/components/ui/button";
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const close = () => setOpen(false);
+
+  const signOutRedirect = () => {
+    const clientId = "5c3m5pbhagf094ms0jnrvkbpa";
+    const logoutUri = "https://s3-cobra-web.s3.eu-west-1.amazonaws.com/index.html";
+    const cognitoDomain = "https://eu-west-1egua8bz6s.auth.eu-west-1.amazoncognito.com";
+    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
@@ -26,6 +34,10 @@ export const Navbar = () => {
           <Separator orientation="vertical" className="h-6" />
           <ThemeChanger />
           <LanguageChanger />
+          <Button variant="ghost" onClick={signOutRedirect} className="flex items-center space-x-2">
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </Button>
         </nav>
 
         {/* Mobile */}
@@ -47,6 +59,11 @@ export const Navbar = () => {
 
               <ThemeChanger />
               <LanguageChanger />
+
+              <Button variant="ghost" onClick={signOutRedirect} className="flex items-center space-x-2">
+                <LogOut className="h-5 w-5" />
+                <span>Logout</span>
+              </Button>
             </SheetContent>
           </Sheet>
         </div>
