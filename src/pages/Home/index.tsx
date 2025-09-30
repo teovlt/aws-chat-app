@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "react-oidc-context";
 
 interface Message {
   id: string;
@@ -24,6 +25,8 @@ const generateRandomUsername = () => {
 };
 
 export function Home() {
+  const auth = useAuth();
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [username] = useState(generateRandomUsername());
@@ -50,7 +53,6 @@ export function Home() {
 
         const items = res.data.items || [];
 
-        // Transformer le format AWS DynamoDB en format Message
         const parsedMessages: Message[] = items.map((item: any) => ({
           id: item.messageId,
           text: item.content,
@@ -114,13 +116,14 @@ export function Home() {
           <div>
             <h2 className="text-lg font-semibold">Global Discussion</h2>
             <p className="text-sm text-muted-foreground">
-              Welcome, {username}! Join the conversation with {messages.length} messages
+              Welcome, {auth.user?.profile.email}! Join the conversation with {messages.length} messages
             </p>
           </div>
         </div>
         <div className="text-sm text-muted-foreground flex items-center gap-1">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Live
         </div>
+        <button onClick={() => auth.signoutRedirect()}>Sign out</button>
       </div>
 
       {/* Messages */}

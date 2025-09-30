@@ -47,6 +47,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      oidc-client-ts:
+        specifier: ^3.3.0
+        version: 3.3.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -59,6 +62,9 @@ importers:
       react-i18next:
         specifier: ^15.7.3
         version: 15.7.3(i18next@25.5.2(typescript@5.9.2))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)
+      react-oidc-context:
+        specifier: ^3.3.0
+        version: 3.3.0(oidc-client-ts@3.3.0)(react@19.1.1)
       react-router-dom:
         specifier: ^7.9.1
         version: 7.9.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -1465,6 +1471,10 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  jwt-decode@4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -1614,6 +1624,10 @@ packages:
   node-releases@2.0.21:
     resolution: {integrity: sha512-5b0pgg78U3hwXkCM8Z9b2FJdPZlr9Psr9V2gQPESdGHqbntyFJKFW4r5TeWGFzafGY3hzs1JC62VEQMbl1JFkw==}
 
+  oidc-client-ts@3.3.0:
+    resolution: {integrity: sha512-t13S540ZwFOEZKLYHJwSfITugupW4uYLwuQSSXyKH/wHwZ+7FvgHE7gnNJh1YQIZ1Yd1hKSRjqeXGSUtS0r9JA==}
+    engines: {node: '>=18'}
+
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -1692,6 +1706,13 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  react-oidc-context@3.3.0:
+    resolution: {integrity: sha512-302T/ma4AOVAxrHdYctDSKXjCq9KNHT564XEO2yOPxRfxEP58xa4nz+GQinNl8x7CnEXECSM5JEjQJk3Cr5BvA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      oidc-client-ts: ^3.1.0
+      react: '>=16.14.0'
 
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
@@ -3236,6 +3257,8 @@ snapshots:
 
   json5@2.2.3: {}
 
+  jwt-decode@4.0.0: {}
+
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -3352,6 +3375,10 @@ snapshots:
 
   node-releases@2.0.21: {}
 
+  oidc-client-ts@3.3.0:
+    dependencies:
+      jwt-decode: 4.0.0
+
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -3413,6 +3440,11 @@ snapshots:
     optionalDependencies:
       react-dom: 19.1.1(react@19.1.1)
       typescript: 5.9.2
+
+  react-oidc-context@3.3.0(oidc-client-ts@3.3.0)(react@19.1.1):
+    dependencies:
+      oidc-client-ts: 3.3.0
+      react: 19.1.1
 
   react-refresh@0.17.0: {}
 
