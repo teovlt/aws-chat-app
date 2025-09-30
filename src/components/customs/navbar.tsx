@@ -34,7 +34,7 @@ export const Navbar = () => {
           <Separator orientation="vertical" className="h-6" />
           <ThemeChanger />
           <LanguageChanger />
-          <Button variant="ghost" onClick={signOutRedirect} className="flex items-center space-x-2">
+          <Button variant="ghost" onClick={signOutRedirect} className="flex items-center space-x-2 cursor-pointer">
             <LogOut className="h-5 w-5" />
             <span>Logout</span>
           </Button>
@@ -60,7 +60,7 @@ export const Navbar = () => {
               <ThemeChanger />
               <LanguageChanger />
 
-              <Button variant="ghost" onClick={signOutRedirect} className="flex items-center space-x-2">
+              <Button variant="ghost" onClick={signOutRedirect} className="flex items-center space-x-2 cursor-pointer">
                 <LogOut className="h-5 w-5" />
                 <span>Logout</span>
               </Button>
