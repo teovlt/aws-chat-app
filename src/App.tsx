@@ -1,5 +1,7 @@
 import { Home } from "@/pages/Home";
 import { useAuth } from "react-oidc-context";
+import { Navbar } from "./components/customs/navbar";
+import { Footer } from "./components/customs/footer";
 
 export const App = () => {
   const auth = useAuth();
@@ -13,7 +15,13 @@ export const App = () => {
   }
 
   if (auth.isAuthenticated) {
-    return <Home />;
+    return (
+      <>
+        <Navbar />
+        <Home />
+        <Footer />
+      </>
+    );
   }
 
   return (
