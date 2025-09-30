@@ -47,7 +47,7 @@ export function Home() {
 
         const parsedMessages: Message[] = items.map((item: any) => ({
           id: item.messageId,
-          text: item.content,
+          text: item.text,
           username: String(item.username || "Unknown"),
           timestamp: new Date(item.timestamp_utc_iso8601 || Date.now()),
           isOwn: item.username === auth.user?.profile["cognito:username"],
@@ -66,7 +66,7 @@ export function Home() {
     if (!newMessage.trim()) return;
 
     try {
-      const body = { username: auth.user?.profile["cognito:username"], content: newMessage.trim() };
+      const body = { username: auth.user?.profile["cognito:username"], text: newMessage.trim() };
       await axios.post(API_URL, body, {
         headers: { "Content-Type": "application/json" },
       });
