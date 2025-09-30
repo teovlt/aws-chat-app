@@ -14,7 +14,7 @@ export const App = () => {
   // Nettoyer l'URL après login
   useEffect(() => {
     if (auth.isAuthenticated && window.location.search.includes("code=")) {
-      window.history.replaceState({}, document.title, "/");
+      window.history.replaceState({}, document.title, "/index.html");
     }
   }, [auth.isAuthenticated, navigate]);
 
