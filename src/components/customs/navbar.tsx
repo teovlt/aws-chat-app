@@ -7,18 +7,17 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { ThemeChanger } from "./theme-changer";
 import { LanguageChanger } from "./language-changer";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "react-oidc-context";
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const auth = useAuth();
 
   const close = () => setOpen(false);
 
   const signOutRedirect = () => {
-    auth.signoutRedirect({
-      post_logout_redirect_uri: "https://s3-cobra-web.s3.eu-west-1.amazonaws.com/index.html",
-    });
+    const clientId = "5c3m5pbhagf094ms0jnrvkbpa";
+    const logoutUri = "https://s3-cobra-web.s3.eu-west-1.amazonaws.com/index.html";
+    const cognitoDomain = "https://eu-west-1egua8bz6s.auth.eu-west-1.amazoncognito.com";
+    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
   };
 
   return (
