@@ -15,21 +15,11 @@ interface Message {
 
 const API_URL = "https://xvkzbvpitd.execute-api.eu-west-1.amazonaws.com/prod/api/messages";
 
-const generateRandomUsername = () => {
-  const adjectives = ["Cool", "Smart", "Happy", "Bright", "Swift", "Kind", "Bold", "Calm", "Quick", "Wise"];
-  const nouns = ["User", "Chat", "Friend", "Guest", "Member", "Person", "Visitor", "Buddy", "Pal", "Mate"];
-  const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
-  const randomNumber = Math.floor(Math.random() * 1000);
-  return `${randomAdjective}${randomNoun}${randomNumber}`;
-};
-
 export function Home() {
   const auth = useAuth();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [username] = useState(generateRandomUsername());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,12 +43,14 @@ export function Home() {
 
         const items = res.data.items || [];
 
+        console.log(auth.user);
+
         const parsedMessages: Message[] = items.map((item: any) => ({
           id: item.messageId,
           text: item.content,
           username: String(item.username || "Unknown"),
           timestamp: new Date(item.timestamp_utc_iso8601 || Date.now()),
-          isOwn: item.username === username,
+          isOwn: item.username === auth.user?.profile.preferred_username,
         }));
 
         setMessages(parsedMessages);
@@ -74,7 +66,7 @@ export function Home() {
     if (!newMessage.trim()) return;
 
     try {
-      const body = { username, content: newMessage.trim() };
+      const body = { username: auth.user?.profile.preferred_username, content: newMessage.trim() };
       await axios.post(API_URL, body, {
         headers: { "Content-Type": "application/json" },
       });
@@ -84,7 +76,7 @@ export function Home() {
         {
           id: Date.now().toString(),
           text: newMessage.trim(),
-          username,
+          username: auth.user?.profile.preferred_username || "Unknown",
           timestamp: new Date(),
           isOwn: true,
         },
