@@ -116,7 +116,7 @@ export function Home() {
           <div>
             <h2 className="text-lg font-semibold">Global Discussion</h2>
             <p className="text-sm text-muted-foreground">
-              Welcome,<strong>{auth.user?.profile.name}</strong>! Join the conversation with {messages.length} messages
+              Welcome,<strong>{auth.user?.profile.email}</strong>! Join the conversation with {messages.length} messages
             </p>
           </div>
         </div>
