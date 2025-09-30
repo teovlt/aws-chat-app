@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeChanger } from "./theme-changer";
-import { LanguageChanger } from "./language-changer";
 import { Button } from "@/components/ui/button";
 
 export const Navbar = () => {

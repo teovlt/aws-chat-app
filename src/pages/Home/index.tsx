@@ -50,7 +50,7 @@ export function Home() {
           text: item.content,
           username: String(item.username || "Unknown"),
           timestamp: new Date(item.timestamp_utc_iso8601 || Date.now()),
-          isOwn: item.username === auth.user?.profile.preferred_username,
+          isOwn: item.username === auth.user?.profile["cognito:username"],
         }));
 
         setMessages(parsedMessages);
@@ -66,7 +66,7 @@ export function Home() {
     if (!newMessage.trim()) return;
 
     try {
-      const body = { username: auth.user?.profile.preferred_username, content: newMessage.trim() };
+      const body = { username: auth.user?.profile["cognito:username"], content: newMessage.trim() };
       await axios.post(API_URL, body, {
         headers: { "Content-Type": "application/json" },
       });
@@ -76,7 +76,7 @@ export function Home() {
         {
           id: Date.now().toString(),
           text: newMessage.trim(),
-          username: auth.user?.profile.preferred_username || "Unknown",
+          username: String(auth.user?.profile["cognito:username"] || "Unknown"),
           timestamp: new Date(),
           isOwn: true,
         },
@@ -108,7 +108,8 @@ export function Home() {
           <div>
             <h2 className="text-lg font-semibold">Global Discussion</h2>
             <p className="text-sm text-muted-foreground">
-              Welcome, <strong>{auth.user?.profile.email}</strong>! Join the conversation with {messages.length} messages
+              Welcome, <strong>{String(auth.user?.profile["cognito:username"])}</strong>! Join the conversation with {messages.length}{" "}
+              messages
             </p>
           </div>
         </div>
