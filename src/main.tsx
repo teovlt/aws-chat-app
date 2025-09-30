@@ -7,6 +7,7 @@ import { HashRouter } from "react-router-dom";
 import { ThemeProvider } from "./providers/theme-provider";
 import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "react-oidc-context";
+import { WebStorageStateStore } from "oidc-client-ts";
 
 const cognitoAuthConfig = {
   authority: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_eGUA8bz6s",
@@ -14,6 +15,7 @@ const cognitoAuthConfig = {
   redirect_uri: "https://s3-cobra-web.s3.eu-west-1.amazonaws.com/index.html",
   response_type: "code",
   scope: "openid profile email phone",
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
 
 createRoot(document.getElementById("root")!).render(
