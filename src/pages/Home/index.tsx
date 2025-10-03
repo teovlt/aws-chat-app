@@ -22,22 +22,17 @@ export function Home() {
   const [nextKey, setNextKey] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesStartRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToTop = () => {
+    messagesStartRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const [initialLoad, setInitialLoad] = useState(true);
-
   useEffect(() => {
-    if (initialLoad) {
-      scrollToBottom();
-      setInitialLoad(false);
-    }
-  }, [messages, initialLoad]);
+    scrollToTop();
+  }, [messages]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -123,7 +118,7 @@ export function Home() {
 
       setNewMessage("");
       inputRef.current?.focus();
-      scrollToBottom();
+      scrollToTop();
     } catch (err) {
       console.error("Erreur sending message:", err);
     }
@@ -159,7 +154,7 @@ export function Home() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <div ref={messagesEndRef} />
+        <div ref={messagesStartRef} />
         {messages.map((message) => (
           <div key={message.id} className={`flex gap-3 ${message.isOwn ? "flex-row-reverse" : "flex-row"}`}>
             <Avatar className="w-8 h-8 flex-shrink-0">
