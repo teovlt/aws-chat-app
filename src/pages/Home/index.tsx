@@ -46,7 +46,12 @@ export function Home() {
   const fetchMessages = useCallback(
     async (key: string | null = null) => {
       try {
-        const res = await axios.get(API_URL, { params: { lastKey: key, limit: 10 } });
+        const res = await axios.get(API_URL, {
+          params: { lastKey: key, limit: 10 },
+          headers: {
+            Authorization: `Bearer ${auth.user?.access_token}`,
+          },
+        });
         const items = res.data.items || [];
         const parsed: Message[] = items.map((item: any) => ({
           id: item.messageId,
@@ -98,7 +103,12 @@ export function Home() {
 
     try {
       const body = { username: auth.user?.profile["cognito:username"], text: newMessage.trim() };
-      await axios.post(API_URL, body, { headers: { "Content-Type": "application/json" } });
+      await axios.post(API_URL, body, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.user?.access_token}`,
+        },
+      });
 
       setMessages((prev) => [
         {
