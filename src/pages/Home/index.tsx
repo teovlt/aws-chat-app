@@ -31,10 +31,6 @@ export function Home() {
   };
 
   useEffect(() => {
-    scrollToTop();
-  }, [messages]);
-
-  useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
