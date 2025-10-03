@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,15 +13,18 @@ interface Message {
   isOwn: boolean;
 }
 
-const API_URL = "https://xvkzbvpitd.execute-api.eu-west-1.amazonaws.com/prod/api/messages";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function Home() {
   const auth = useAuth();
-
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [nextKey, setNextKey] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,17 +38,12 @@ export function Home() {
     inputRef.current?.focus();
   }, []);
 
-  // Fetch messages from API
-  useEffect(() => {
-    const fetchMessages = async () => {
+  const fetchMessages = useCallback(
+    async (key: string | null = null) => {
       try {
-        const res = await axios.get(API_URL);
-
+        const res = await axios.get(API_URL, { params: { lastKey: key, limit: 10 } });
         const items = res.data.items || [];
-
-        console.log(auth.user);
-
-        const parsedMessages: Message[] = items.map((item: any) => ({
+        const parsed: Message[] = items.map((item: any) => ({
           id: item.messageId,
           text: item.text,
           username: String(item.username || "Unknown"),
@@ -53,26 +51,51 @@ export function Home() {
           isOwn: item.username === auth.user?.profile["cognito:username"],
         }));
 
-        setMessages(parsedMessages);
+        if (key) {
+          setMessages((prev) => [...prev, ...parsed]);
+        } else {
+          setMessages(parsed);
+        }
+        setNextKey(res.data.nextKey || null);
       } catch (err) {
         console.error("Erreur fetching messages:", err);
       }
-    };
+    },
+    [auth.user],
+  );
 
-    fetchMessages();
-  }, []);
+  useEffect(() => {
+    fetchMessages(); // premier lot
+  }, [fetchMessages]);
+
+  // IntersectionObserver
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && nextKey && !loadingMore) {
+          setLoadingMore(true);
+          fetchMessages(nextKey).finally(() => setLoadingMore(false));
+        }
+      },
+      { rootMargin: "100px" }, // déclenche un peu avant
+    );
+
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [nextKey, loadingMore, fetchMessages]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     try {
       const body = { username: auth.user?.profile["cognito:username"], text: newMessage.trim() };
-      await axios.post(API_URL, body, {
-        headers: { "Content-Type": "application/json" },
-      });
+      await axios.post(API_URL, body, { headers: { "Content-Type": "application/json" } });
 
-      setMessages((prevMessages) => [
-        ...prevMessages,
+      setMessages((prev) => [
+        ...prev,
         {
           id: Date.now().toString(),
           text: newMessage.trim(),
@@ -142,6 +165,14 @@ export function Home() {
             </div>
           </div>
         ))}
+
+        {/* Sentinel pour scroll infini */}
+        {nextKey && (
+          <div ref={loadMoreRef} className="h-10 flex justify-center items-center text-muted-foreground text-sm">
+            Loading more…
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
