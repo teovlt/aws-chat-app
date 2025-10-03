@@ -101,7 +101,6 @@ export function Home() {
       await axios.post(API_URL, body, { headers: { "Content-Type": "application/json" } });
 
       setMessages((prev) => [
-        ...prev,
         {
           id: Date.now().toString(),
           text: newMessage.trim(),
@@ -109,6 +108,7 @@ export function Home() {
           timestamp: new Date(),
           isOwn: true,
         },
+        ...prev,
       ]);
 
       setNewMessage("");
