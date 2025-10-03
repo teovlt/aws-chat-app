@@ -30,9 +30,14 @@ export function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const [initialLoad, setInitialLoad] = useState(true);
+
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (initialLoad) {
+      scrollToBottom();
+      setInitialLoad(false);
+    }
+  }, [messages, initialLoad]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -65,7 +70,7 @@ export function Home() {
   );
 
   useEffect(() => {
-    fetchMessages(); // premier lot
+    fetchMessages();
   }, [fetchMessages]);
 
   // IntersectionObserver
@@ -76,11 +81,12 @@ export function Home() {
       (entries) => {
         const entry = entries[0];
         if (entry.isIntersecting && nextKey && !loadingMore) {
+          setTimeout(() => {}, 1000); // Pour simuler un délai ca rend bien classe
           setLoadingMore(true);
           fetchMessages(nextKey).finally(() => setLoadingMore(false));
         }
       },
-      { rootMargin: "100px" }, // déclenche un peu avant
+      { threshold: 1.0 },
     );
 
     observer.observe(loadMoreRef.current);
@@ -143,6 +149,7 @@ export function Home() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div ref={messagesEndRef} />
         {messages.map((message) => (
           <div key={message.id} className={`flex gap-3 ${message.isOwn ? "flex-row-reverse" : "flex-row"}`}>
             <Avatar className="w-8 h-8 flex-shrink-0">
@@ -166,14 +173,12 @@ export function Home() {
           </div>
         ))}
 
-        {/* Sentinel pour scroll infini */}
+        {/* Scroll infini */}
         {nextKey && (
-          <div ref={loadMoreRef} className="h-10 flex justify-center items-center text-muted-foreground text-sm">
+          <div ref={loadMoreRef} className="h-10 flex justify-center items-center text-sm text-blue-400">
             Loading more…
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
